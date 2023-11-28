@@ -1,5 +1,6 @@
 package com.example.android.notepadappcompose.feature_note.presentation.add_edit_note
 
+import android.content.Intent
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.toArgb
@@ -118,6 +119,15 @@ class AddEditNoteViewModel @Inject constructor(
                     }
                 }
             }
+
+            is AddEditNoteEvent.ShareNote -> {
+                val context = event.context
+                val intent = Intent.createChooser(Intent(Intent.ACTION_SEND).apply {
+                    type = "text/plain"
+                    putExtra(Intent.EXTRA_TEXT, "${noteTitle.value.text} \n${noteContent.value.text}")
+                }, "Share note via")
+                context.startActivity(intent)
+            }
         }
     }
 
@@ -125,5 +135,4 @@ class AddEditNoteViewModel @Inject constructor(
         data class ShowSnackbar(val message: String) : UiEvent()
         object SaveNote : UiEvent()
     }
-
 }
